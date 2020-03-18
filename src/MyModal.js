@@ -3,7 +3,17 @@ import React from 'react'
 
 
 class MyModal extends React.Component {
+  constructor(props) {
+    super(props)
 
+    this.state = {
+
+      selectedCounty: ''
+
+    }
+  }
+
+  // modal functionality
 
   listenKeyboard(event) {
     if (event.key === 'Escape' || event.keyCode === 27) {
@@ -28,24 +38,32 @@ class MyModal extends React.Component {
   }
 
   onClose = e => {
-    this.props.onClose && this.props.onClose(e)
-  }
+    this.props.onClose && this.props.onClose(e)  }
 
 
-  chooseCounty = e => { //this function does not work!
-    let playerSelection = this.Select.Option // this does not retrieve anything
-    alert(playerSelection)
+    // allows player's county selection to be checked against the correcty county in App's state
 
-    if ((playerSelection) === (this.state.countyName)) {
+  chooseCounty = e => { 
+
+    if ((this.props.countyChosen) === (this.state.selectedCounty)) {
+
+      // fires unique if check to be used to display info when player wins
+
+      this.props.uniqueIfCheck()
       this.props.endGame()
       alert("Wow! You really know Vermont! Good job!!")
+      
     } else {
-      // this.setState({ // this can't go here
-      //   score: this.state.score - 10
-      // });
+      this.props.score(-10)
       alert("Incorrect guess. Please continue your peregrination through the Green Mountain State.")
+      this.props.concealModal()
     }
   }
+
+  // stores player's county selection
+  
+  handleChange = (event) =>
+    this.setState({selectedCounty: event.target.value});
 
   render() {
 
@@ -54,7 +72,7 @@ class MyModal extends React.Component {
         <div>
           <div className="modal-content-div">
             <div className="modal-dialog-div" onClick={this.onDialogClick}>
-              <select id="county-select">
+              <select id="county-select" onChange={this.handleChange}>
                 <option value="">--Please choose a County--</option>
                 <option value='Addison County'>Addison</option>
                 <option value='Bennington County'>Bennington</option>
